@@ -1,0 +1,394 @@
+@page "/"
+@using System.Text.Json
+@inject IJSRuntime JS
+
+<div class="sheet-wrapper">
+
+    <!-- ===== HEADER ===== -->
+    <div class="sheet-header">
+        <div class="header-wolf">
+            <svg viewBox="0 0 60 60" class="wolf-icon" aria-hidden="true">
+                <path d="M30 5 L20 15 L10 12 L15 22 L8 30 L18 28 L20 38 L30 32 L40 38 L42 28 L52 30 L45 22 L50 12 L40 15 Z" fill="white" opacity="0.9"/>
+                <circle cx="24" cy="22" r="2" fill="#1a2540"/>
+                <circle cx="36" cy="22" r="2" fill="#1a2540"/>
+            </svg>
+        </div>
+        <div class="header-title">
+            <span class="header-top">ENSAMMA</span>
+            <span class="header-bottom">VARGEN</span>
+        </div>
+        <div class="header-sun">
+            <svg viewBox="0 0 40 40" class="sun-icon" aria-hidden="true">
+                <circle cx="20" cy="20" r="8" fill="#f5c842"/>
+                <line x1="20" y1="2" x2="20" y2="10" stroke="#f5c842" stroke-width="2"/>
+                <line x1="20" y1="30" x2="20" y2="38" stroke="#f5c842" stroke-width="2"/>
+                <line x1="2" y1="20" x2="10" y2="20" stroke="#f5c842" stroke-width="2"/>
+                <line x1="30" y1="20" x2="38" y2="20" stroke="#f5c842" stroke-width="2"/>
+                <line x1="6" y1="6" x2="12" y2="12" stroke="#f5c842" stroke-width="2"/>
+                <line x1="28" y1="28" x2="34" y2="34" stroke="#f5c842" stroke-width="2"/>
+                <line x1="34" y1="6" x2="28" y2="12" stroke="#f5c842" stroke-width="2"/>
+                <line x1="12" y1="28" x2="6" y2="34" stroke="#f5c842" stroke-width="2"/>
+            </svg>
+        </div>
+    </div>
+    <div class="sheet-subheader">— KAIKRIGARE —</div>
+
+    <!-- ===== TAB BUTTONS ===== -->
+    <div class="tab-bar">
+        <button class="tab-btn @(activeTab == 0 ? "active" : "")" @onclick="() => activeTab = 0">Karaktärsblad</button>
+        <button class="tab-btn @(activeTab == 1 ? "active" : "")" @onclick="() => activeTab = 1">Stridssida</button>
+        <button class="tab-btn reset-btn" @onclick="ResetAll">Återställ</button>
+    </div>
+
+    <!-- ===================================================
+         TAB 0: FRONT / CHARACTER SHEET
+    ==================================================== -->
+    <div style="display:@(activeTab == 0 ? "block" : "none")">
+
+        <!-- Identity row -->
+        <div class="identity-row">
+            <div class="id-field wide">
+                <label>NAMN</label>
+                <input type="text"
+                       value="@character.Namn"
+                       @oninput="e => { character.Namn = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+            </div>
+            <div class="id-field narrow">
+                <label>RANG</label>
+                <input type="text"
+                       value="@character.Rang"
+                       @oninput="e => { character.Rang = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+            </div>
+            <div class="id-field wide">
+                <label>TITEL</label>
+                <input type="text"
+                       value="@character.Titel"
+                       @oninput="e => { character.Titel = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+            </div>
+        </div>
+
+        <div class="two-col">
+
+            <!-- LEFT: Kai disciplines -->
+            <div class="left-col">
+                <div class="section-header">
+                    <span class="sh-check"></span>
+                    <span class="sh-left">KAIDISCIPLINER</span>
+                    <span class="sh-right">BONUS</span>
+                </div>
+                <table class="discipline-table">
+                    @foreach (var d in character.KaiDiscipliner)
+                    {
+                        <tr class="@(d.Selected ? "row-selected" : "")">
+                            <td class="disc-check">
+                                <input type="checkbox"
+                                       checked="@d.Selected"
+                                       @onchange="e => { d.Selected = (bool)(e.Value ?? false); OnChange(); }" />
+                            </td>
+                            <td class="disc-name">
+                                @d.Namn
+                                @if (d.Namn == "Vapenskicklighet")
+                                {
+                                    <input type="text" class="disc-extra"
+                                           placeholder="vilket vapen?"
+                                           value="@d.Extra"
+                                           @oninput="e => { d.Extra = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                                }
+                            </td>
+                            <td class="disc-bonus">
+                                <input type="text" maxlength="4"
+                                       value="@d.Bonus"
+                                       @oninput="e => { d.Bonus = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                            </td>
+                        </tr>
+                    }
+                </table>
+
+                <!-- Money -->
+                <div class="section-header mt-section">PENGABÖRS</div>
+                <div class="money-row">
+                    <span class="money-label">GULDDALER</span>
+                    <input type="text" class="money-input"
+                           value="@character.Gulddaler"
+                           @oninput="e => { character.Gulddaler = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                </div>
+
+                <!-- Meals -->
+                <div class="meals-row">
+                    <span class="money-label">MÅLTIDER</span>
+                    <div class="meal-checks">
+                        @for (int i = 0; i < character.Maltider.Length; i++)
+                        {
+                            int idx = i;
+                            <input type="checkbox"
+                                   checked="@character.Maltider[idx]"
+                                   @onchange="e => { character.Maltider[idx] = (bool)(e.Value ?? false); OnChange(); }" />
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Appearance -->
+            <div class="right-col">
+                <div class="section-header">UTSEENDE</div>
+                <textarea class="appearance-area"
+                          value="@character.Utseende"
+                          @oninput="e => { character.Utseende = e.Value?.ToString() ?? string.Empty; OnChange(); }"></textarea>
+            </div>
+        </div>
+
+        <!-- Backpack and Special items -->
+        <div class="two-col mt-section">
+
+            <!-- RYGGSÄCKSFÖREMÅL -->
+            <div class="left-col">
+                <div class="section-header">
+                    <span class="sh-left">RYGGSÄCKSFÖREMÅL</span>
+                    <span class="sh-right">ANTAL</span>
+                </div>
+                <table class="items-table">
+                    @foreach (var item in character.Ryggsack)
+                    {
+                        <tr>
+                            <td class="item-name">
+                                <input type="text"
+                                       value="@item.Namn"
+                                       @oninput="e => { item.Namn = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                            </td>
+                            <td class="item-qty">
+                                <input type="text" maxlength="4"
+                                       value="@item.Antal"
+                                       @oninput="e => { item.Antal = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+
+            <!-- SPECIALFÖREMÅL -->
+            <div class="right-col">
+                <div class="section-header">
+                    <span class="sh-left">SPECIALFÖREMÅL</span>
+                    <span class="sh-right">BONUS</span>
+                </div>
+                <table class="items-table">
+                    @foreach (var item in character.Specialforemal)
+                    {
+                        <tr>
+                            <td class="item-name">
+                                <input type="text"
+                                       value="@item.Namn"
+                                       @oninput="e => { item.Namn = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                            </td>
+                            <td class="item-qty">
+                                <input type="text" maxlength="4"
+                                       value="@item.Bonus"
+                                       @oninput="e => { item.Bonus = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+    </div><!-- end tab 0 -->
+
+
+    <!-- ===================================================
+         TAB 1: BACK / COMBAT SHEET
+    ==================================================== -->
+    <div style="display:@(activeTab == 1 ? "block" : "none")">
+
+        <!-- Combat stats -->
+        <div class="combat-stats-row">
+            <div class="combat-stat">
+                <label>STRIDSVÄRDE</label>
+                <input type="text"
+                       value="@character.Stridsvarde"
+                       @oninput="e => { character.Stridsvarde = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+            </div>
+            <div class="combat-stat">
+                <label>UTHÅLLIGHET</label>
+                <input type="text"
+                       value="@character.Uthallighet"
+                       @oninput="e => { character.Uthallighet = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+            </div>
+        </div>
+
+        <div class="two-col">
+
+            <!-- LEFT: Combat table + Notes -->
+            <div class="left-col">
+                <div class="section-header">STRIDSTABELL</div>
+                <table class="combat-table">
+                    <thead>
+                        <tr>
+                            <th class="ct-side-header">DU</th>
+                            <th class="ct-vs">vs</th>
+                            <th class="ct-side-header">FIENDEN</th>
+                        </tr>
+                        <tr>
+                            <th>UTHÅLLIGHET</th>
+                            <th class="ct-vs">STRIDSRATIO</th>
+                            <th>UTHÅLLIGHET</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var row in character.Stridstabell)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="text"
+                                           value="@row.DuUth"
+                                           @oninput="e => { row.DuUth = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                                </td>
+                                <td class="ct-vs">
+                                    <input type="text"
+                                           value="@row.Stridsratio"
+                                           @oninput="e => { row.Stridsratio = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                                </td>
+                                <td>
+                                    <input type="text"
+                                           value="@row.FiendeUth"
+                                           @oninput="e => { row.FiendeUth = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="death-note">UTHÅLLIGHET 0 = DÖD</div>
+
+                <!-- Notes -->
+                <div class="section-header mt-section">ANTECKNINGAR</div>
+                <textarea class="notes-area"
+                          value="@character.Anteckningar"
+                          @oninput="e => { character.Anteckningar = e.Value?.ToString() ?? string.Empty; OnChange(); }"></textarea>
+            </div>
+
+            <!-- RIGHT: Weapons -->
+            <div class="right-col">
+                <div class="section-header">
+                    <span class="sh-check"></span>
+                    <span class="sh-left">VAPEN</span>
+                    <span class="sh-right">BONUS</span>
+                </div>
+                <table class="items-table weapon-table">
+                    @for (int i = 0; i < character.Vapen.Count; i++)
+                    {
+                        var weapon = character.Vapen[i];
+                        bool isAndraVapen = i >= character.Vapen.Count - 2;
+                        <tr class="@(weapon.Selected ? "row-selected" : "")">
+                            <td class="disc-check">
+                                <input type="checkbox"
+                                       checked="@weapon.Selected"
+                                       @onchange="e => { weapon.Selected = (bool)(e.Value ?? false); OnChange(); }" />
+                            </td>
+                            <td class="weapon-name-cell">
+                                @if (!isAndraVapen)
+                                {
+                                    <span class="weapon-name-fixed">@weapon.Namn</span>
+                                }
+                                else
+                                {
+                                    <input type="text" class="weapon-name-input"
+                                           placeholder="Annat vapen"
+                                           value="@weapon.Namn"
+                                           @oninput="e => { weapon.Namn = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                                }
+                            </td>
+                            <td class="item-qty">
+                                <input type="text" maxlength="4"
+                                       value="@weapon.Bonus"
+                                       @oninput="e => { weapon.Bonus = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+
+        </div>
+
+    </div><!-- end tab 1 -->
+
+</div><!-- end sheet-wrapper -->
+
+@code {
+    private CharacterData character = new();
+    private int activeTab = 0;
+    private const string StorageKey = "ev_character";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var json = await JS.InvokeAsync<string?>("storageInterop.get", StorageKey);
+            if (!string.IsNullOrEmpty(json))
+            {
+                try
+                {
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var loaded = JsonSerializer.Deserialize<CharacterData>(json, options);
+                    if (loaded != null)
+                    {
+                        MergeLoaded(loaded);
+                        StateHasChanged();
+                    }
+                }
+                catch { /* ignore corrupt data */ }
+            }
+        }
+    }
+
+    private void MergeLoaded(CharacterData loaded)
+    {
+        character.Namn = loaded.Namn;
+        character.Rang = loaded.Rang;
+        character.Titel = loaded.Titel;
+        character.Utseende = loaded.Utseende;
+        character.Gulddaler = loaded.Gulddaler;
+        character.Stridsvarde = loaded.Stridsvarde;
+        character.Uthallighet = loaded.Uthallighet;
+        character.Anteckningar = loaded.Anteckningar;
+
+        if (loaded.Maltider?.Length == character.Maltider.Length)
+            character.Maltider = loaded.Maltider;
+
+        // Disciplines: preserve fixed names, restore bonus + selected
+        for (int i = 0; i < character.KaiDiscipliner.Count && i < (loaded.KaiDiscipliner?.Count ?? 0); i++)
+        {
+            character.KaiDiscipliner[i].Bonus    = loaded.KaiDiscipliner![i].Bonus;
+            character.KaiDiscipliner[i].Selected = loaded.KaiDiscipliner[i].Selected;
+            character.KaiDiscipliner[i].Extra    = loaded.KaiDiscipliner[i].Extra;
+        }
+
+        if (loaded.Ryggsack?.Count == character.Ryggsack.Count)
+            character.Ryggsack = loaded.Ryggsack;
+
+        if (loaded.Specialforemal?.Count == character.Specialforemal.Count)
+            character.Specialforemal = loaded.Specialforemal;
+
+        if (loaded.Stridstabell?.Count == character.Stridstabell.Count)
+            character.Stridstabell = loaded.Stridstabell;
+
+        // Weapons: restore bonus + selected; last 2 are fully editable (name + bonus)
+        for (int i = 0; i < character.Vapen.Count && i < (loaded.Vapen?.Count ?? 0); i++)
+        {
+            character.Vapen[i].Bonus    = loaded.Vapen![i].Bonus;
+            character.Vapen[i].Selected = loaded.Vapen[i].Selected;
+            if (i >= character.Vapen.Count - 2)
+                character.Vapen[i].Namn = loaded.Vapen[i].Namn;
+        }
+    }
+
+    private async void ResetAll()
+    {
+        character = new CharacterData();
+        await JS.InvokeVoidAsync("storageInterop.set", StorageKey, JsonSerializer.Serialize(character));
+    }
+
+    private async void OnChange()
+    {
+        var json = JsonSerializer.Serialize(character);
+        await JS.InvokeVoidAsync("storageInterop.set", StorageKey, json);
+    }
+}

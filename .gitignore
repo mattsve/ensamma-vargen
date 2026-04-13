@@ -1,0 +1,24 @@
+# Build output
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+.vs/
+.vscode/
+
+# NuGet
+*.nupkg
+packages/
+project.lock.json
+
+# Blazor/WASM
+wwwroot/_framework/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project-specific
+handlingsblad.pdf

@@ -1,0 +1,525 @@
+/* ============================================================
+   BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: #d4c9a8;
+    min-height: 100vh;
+    color: #1a1a1a;
+}
+
+/* ============================================================
+   SHEET WRAPPER
+   ============================================================ */
+.sheet-wrapper {
+    max-width: 800px;
+    margin: 1.5rem auto;
+    background: #f5f0e8;
+    border: 2px solid #6b4f2a;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.sheet-header {
+    background: #1a2540;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1rem;
+    gap: 1rem;
+}
+
+.header-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+}
+
+.header-top {
+    font-size: 2rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 0.18em;
+    font-family: 'Georgia', serif;
+}
+
+.header-bottom {
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 0.22em;
+    font-family: 'Georgia', serif;
+}
+
+.wolf-icon { width: 56px; height: 56px; }
+.sun-icon  { width: 40px; height: 40px; }
+
+.sheet-subheader {
+    background: #2c3d6b;
+    color: #d4c9a8;
+    text-align: center;
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+    padding: 0.3rem 0;
+    font-family: 'Georgia', serif;
+    border-bottom: 2px solid #6b4f2a;
+}
+
+/* ============================================================
+   TAB BAR
+   ============================================================ */
+.tab-bar {
+    display: flex;
+    border-bottom: 2px solid #6b4f2a;
+    background: #e8e0d0;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    background: #e8e0d0;
+    border: none;
+    border-right: 1px solid #6b4f2a;
+    font-family: 'Georgia', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #5a3e1b;
+    transition: background 0.15s;
+}
+
+.tab-btn:last-child { border-right: none; }
+
+.tab-btn.active {
+    background: #f5f0e8;
+    font-weight: bold;
+    color: #1a2540;
+    border-top: 3px solid #8b6914;
+}
+
+.tab-btn:hover:not(.active) { background: #ddd5c0; }
+
+.reset-btn {
+    flex: 0 0 auto;
+    color: #7a1a1a !important;
+    font-style: italic;
+}
+
+/* ============================================================
+   SECTION HEADER BAND
+   ============================================================ */
+.section-header {
+    background: linear-gradient(90deg, #6b4f2a 0%, #a07830 50%, #6b4f2a 100%);
+    color: #f5f0e8;
+    font-size: 0.7rem;
+    font-family: 'Georgia', serif;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.22rem 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #4a3010;
+    border-bottom: 1px solid #4a3010;
+}
+
+.sh-check { min-width: 1.6rem; }
+.sh-left  { flex: 1; }
+.sh-right { text-align: right; min-width: 3rem; }
+
+.mt-section { margin-top: 0.6rem; }
+
+/* ============================================================
+   IDENTITY ROW
+   ============================================================ */
+.identity-row {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid #8b6914;
+}
+
+.id-field {
+    display: flex;
+    flex-direction: column;
+    padding: 0.3rem 0.5rem 0.2rem;
+    border-right: 1px solid #8b6914;
+}
+
+.id-field:last-child { border-right: none; }
+.id-field.wide  { flex: 2; }
+.id-field.narrow { flex: 1; }
+
+.id-field label {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #5a3e1b;
+    font-family: 'Georgia', serif;
+    margin-bottom: 0.1rem;
+}
+
+.id-field input {
+    border: none;
+    border-bottom: 1px solid #8b6914;
+    background: transparent;
+    font-family: 'Georgia', serif;
+    font-size: 0.9rem;
+    color: #1a1a1a;
+    outline: none;
+    width: 100%;
+    padding: 0.1rem 0;
+}
+
+/* ============================================================
+   TWO-COLUMN LAYOUT
+   ============================================================ */
+.two-col {
+    display: flex;
+    gap: 0;
+    align-items: flex-start;
+    border-bottom: 1px solid #8b6914;
+}
+
+.left-col  { flex: 1; border-right: 1px solid #8b6914; }
+.right-col { flex: 1; }
+
+/* ============================================================
+   DISCIPLINE TABLE
+   ============================================================ */
+.discipline-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+
+.discipline-table tr:nth-child(even) { background: #ede5d5; }
+.discipline-table tr:nth-child(odd)  { background: #f5f0e8; }
+
+.discipline-table td {
+    padding: 0.15rem 0.5rem;
+    border-bottom: 1px solid #d4c9a8;
+}
+
+.disc-check { width: 1.6rem; text-align: center; padding: 0 0.2rem; }
+.disc-check input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: #6b4f2a;
+    cursor: pointer;
+}
+.disc-name  { font-family: 'Georgia', serif; color: #2a1a0a; vertical-align: middle; }
+.disc-bonus { width: 3rem; text-align: center; }
+
+.row-selected td { background: #d4e8c8 !important; }
+
+.disc-extra {
+    display: block;
+    margin-top: 0.15rem;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #8b6914;
+    background: transparent;
+    font-family: 'Georgia', serif;
+    font-size: 0.72rem;
+    font-style: italic;
+    color: #3a2a10;
+    outline: none;
+}
+
+.disc-bonus input {
+    width: 100%;
+    text-align: center;
+    border: none;
+    border-bottom: 1px solid #8b6914;
+    background: transparent;
+    font-family: 'Georgia', serif;
+    font-size: 0.82rem;
+    outline: none;
+}
+
+/* ============================================================
+   MONEY / MEALS
+   ============================================================ */
+.money-row, .meals-row {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-bottom: 1px solid #d4c9a8;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+}
+
+.money-label {
+    font-family: 'Georgia', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5a3e1b;
+    min-width: 5.5rem;
+}
+
+.money-input {
+    border: none;
+    border-bottom: 1px solid #8b6914;
+    background: transparent;
+    font-family: 'Georgia', serif;
+    font-size: 0.85rem;
+    outline: none;
+    flex: 1;
+}
+
+.meal-checks {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.meal-checks input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: #6b4f2a;
+    cursor: pointer;
+}
+
+/* ============================================================
+   APPEARANCE / NOTES TEXTAREA
+   ============================================================ */
+.appearance-area, .notes-area {
+    width: 100%;
+    min-height: 10rem;
+    border: none;
+    background: transparent;
+    font-family: 'Georgia', serif;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.5rem;
+    resize: vertical;
+    outline: none;
+    color: #1a1a1a;
+    line-height: 1.6;
+}
+
+.notes-area { min-height: 8rem; }
+
+/* ============================================================
+   ITEMS TABLE (backpack / special / weapons)
+   ============================================================ */
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.items-table tr:nth-child(even) { background: #ede5d5; }
+.items-table tr:nth-child(odd)  { background: #f5f0e8; }
+
+.items-table td {
+    padding: 0.12rem 0.4rem;
+    border-bottom: 1px solid #d4c9a8;
+}
+
+.item-name { width: 78%; }
+.item-qty  { width: 22%; text-align: center; }
+
+.item-name input, .item-qty input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #c4b898;
+    background: transparent;
+    font-family: 'Georgia', serif;
+    font-size: 0.8rem;
+    outline: none;
+    text-align: inherit;
+}
+
+.item-qty input { text-align: center; }
+
+/* ============================================================
+   COMBAT STATS ROW
+   ============================================================ */
+.combat-stats-row {
+    display: flex;
+    border-bottom: 1px solid #8b6914;
+}
+
+.combat-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 0.3rem 0.5rem;
+    border-right: 1px solid #8b6914;
+}
+
+.combat-stat:last-child { border-right: none; }
+
+.combat-stat label {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #5a3e1b;
+    font-family: 'Georgia', serif;
+    margin-bottom: 0.1rem;
+}
+
+.combat-stat input {
+    border: none;
+    border-bottom: 1px solid #8b6914;
+    background: transparent;
+    font-family: 'Georgia', serif;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #1a1a1a;
+    outline: none;
+    width: 100%;
+}
+
+/* ============================================================
+   COMBAT TABLE
+   ============================================================ */
+.combat-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+}
+
+.combat-table th {
+    background: #d4c9a8;
+    padding: 0.2rem 0.25rem;
+    text-align: center;
+    font-family: 'Georgia', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border: 1px solid #b4a888;
+    color: #3a2a10;
+}
+
+.ct-side-header {
+    background: #c4b898 !important;
+    font-weight: bold;
+    color: #2a1a0a !important;
+}
+
+.ct-vs {
+    background: #e8e0d0 !important;
+    color: #8b6914 !important;
+    font-style: italic;
+    font-size: 0.65rem !important;
+    width: 1.5rem;
+}
+
+.combat-table td {
+    padding: 0.1rem 0.25rem;
+    border: 1px solid #d4c9a8;
+    text-align: center;
+}
+
+.combat-table tr:nth-child(even) td { background: #ede5d5; }
+.combat-table tr:nth-child(odd) td  { background: #f5f0e8; }
+.combat-table td.ct-vs              { background: #e8e0d0 !important; }
+
+.combat-table td input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #c4b898;
+    background: transparent;
+    font-family: 'Georgia', serif;
+    font-size: 0.78rem;
+    outline: none;
+    text-align: center;
+}
+
+.death-note {
+    font-size: 0.65rem;
+    font-style: italic;
+    color: #6b0000;
+    text-align: center;
+    padding: 0.25rem;
+    border-bottom: 1px solid #d4c9a8;
+    background: #f5f0e8;
+    letter-spacing: 0.06em;
+    font-family: 'Georgia', serif;
+}
+
+/* ============================================================
+   WEAPON TABLE
+   ============================================================ */
+.weapon-name-cell { width: 78%; }
+
+.weapon-name-fixed {
+    font-family: 'Georgia', serif;
+    font-size: 0.8rem;
+    color: #2a1a0a;
+}
+
+.weapon-name-input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #c4b898;
+    background: transparent;
+    font-family: 'Georgia', serif;
+    font-size: 0.8rem;
+    outline: none;
+}
+
+/* ============================================================
+   BLAZOR ERROR UI (keep functional)
+   ============================================================ */
+#blazor-error-ui {
+    color-scheme: light only;
+    background: lightyellow;
+    bottom: 0;
+    box-shadow: 0 -1px 2px rgba(0,0,0,0.2);
+    display: none;
+    left: 0;
+    padding: 0.6rem 1.25rem;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+.loading-progress {
+    position: absolute;
+    display: block;
+    width: 8rem;
+    height: 8rem;
+    inset: 20vh 0 auto 0;
+    margin: 0 auto;
+}
+
+.loading-progress circle {
+    fill: none;
+    stroke: #e0e0e0;
+    stroke-width: 0.6rem;
+    transform-origin: 50% 50%;
+    transform: rotate(-90deg);
+}
+
+.loading-progress circle:last-child {
+    stroke: #6b4f2a;
+    stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
+    transition: stroke-dasharray 0.05s ease-in-out;
+}
+
+.loading-progress-text {
+    position: absolute;
+    text-align: center;
+    font-weight: bold;
+    inset: calc(20vh + 3.25rem) 0 auto 0.2rem;
+}
+
+.loading-progress-text:after {
+    content: var(--blazor-load-percentage-text, "Loading");
+}

@@ -136,21 +136,6 @@ html, body {
     gap: 1rem;
 }
 
-.die-btn {
-    background: #1a2540;
-    color: #f5c842;
-    border: 2px solid #2c3d6b;
-    padding: 0.5rem 2rem;
-    font-family: 'Georgia', serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: background 0.15s;
-}
-
-.die-btn:hover { background: #2c3d6b; }
 
 .die-overlay {
     position: fixed;

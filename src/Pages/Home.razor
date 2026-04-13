@@ -278,7 +278,7 @@
                     @for (int i = 0; i < character.Vapen.Count; i++)
                     {
                         var weapon = character.Vapen[i];
-                        bool isAndraVapen = i >= character.Vapen.Count - 3;
+                        bool isAndraVapen = i >= character.Vapen.Count - 3; // last 3 entries are blank/editable
                         <tr class="@(weapon.Selected ? "row-selected" : "")">
                             <td class="disc-check">
                                 <input type="checkbox"
@@ -352,7 +352,10 @@
                         StateHasChanged();
                     }
                 }
-                catch { /* ignore corrupt data */ }
+                catch (Exception ex)
+                {
+                    await JS.InvokeVoidAsync("console.warn", $"Could not load saved character data: {ex.Message}");
+                }
             }
         }
     }

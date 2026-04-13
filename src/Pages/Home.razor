@@ -31,13 +31,15 @@
             </svg>
         </div>
     </div>
-    <div class="sheet-subheader">— KAIKRIGARE —</div>
+    <div class="sheet-subheader">
+        <span>— KAIKRIGARE —</span>
+        <button class="die-tab-btn" @onclick="RollDie">Slå tärning</button>
+    </div>
 
     <!-- ===== TAB BUTTONS ===== -->
     <div class="tab-bar">
         <button class="tab-btn @(activeTab == 0 ? "active" : "")" @onclick="() => activeTab = 0">Karaktärsblad</button>
         <button class="tab-btn @(activeTab == 1 ? "active" : "")" @onclick="() => activeTab = 1">Stridssida</button>
-        <button class="tab-btn reset-btn" @onclick="ResetAll">Återställ</button>
     </div>
 
     <!-- ===================================================
@@ -276,7 +278,7 @@
                     @for (int i = 0; i < character.Vapen.Count; i++)
                     {
                         var weapon = character.Vapen[i];
-                        bool isAndraVapen = i >= character.Vapen.Count - 2;
+                        bool isAndraVapen = i >= character.Vapen.Count - 3;
                         <tr class="@(weapon.Selected ? "row-selected" : "")">
                             <td class="disc-check">
                                 <input type="checkbox"
@@ -312,9 +314,25 @@
 
 </div><!-- end sheet-wrapper -->
 
+<div class="reset-bar">
+    <button class="reset-btn" @onclick="ResetAll">Återställ karaktärsblad</button>
+</div>
+
+@if (dieResult.HasValue)
+{
+    <div class="die-overlay" @onclick="() => dieResult = null">
+        <div class="die-popup" @onclick:stopPropagation>
+            <div class="die-label">TÄRNINGSSLAG</div>
+            <div class="die-result">@dieResult</div>
+            <button class="die-close" @onclick="() => dieResult = null">Stäng</button>
+        </div>
+    </div>
+}
+
 @code {
-    private CharacterData character = new();
+    private CharacterData character = NewCharacter();
     private int activeTab = 0;
+    private int? dieResult = null;
     private const string StorageKey = "ev_character";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -375,16 +393,24 @@
         {
             character.Vapen[i].Bonus    = loaded.Vapen![i].Bonus;
             character.Vapen[i].Selected = loaded.Vapen[i].Selected;
-            if (i >= character.Vapen.Count - 2)
+            if (i >= character.Vapen.Count - 3)
                 character.Vapen[i].Namn = loaded.Vapen[i].Namn;
         }
     }
+
+    private void RollDie() => dieResult = Random.Shared.Next(0, 10);
+
+    private static CharacterData NewCharacter() => new()
+    {
+        Stridsvarde = Random.Shared.Next(10, 20).ToString(),
+        Uthallighet = Random.Shared.Next(20, 30).ToString()
+    };
 
     private async void ResetAll()
     {
         var confirmed = await JS.InvokeAsync<bool>("confirm", "Är du säker? Alla värden kommer att raderas.");
         if (!confirmed) return;
-        character = new CharacterData();
+        character = NewCharacter();
         await JS.InvokeVoidAsync("storageInterop.set", StorageKey, JsonSerializer.Serialize(character));
     }
 

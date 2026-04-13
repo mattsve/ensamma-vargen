@@ -62,12 +62,20 @@ html, body {
 .sheet-subheader {
     background: #2c3d6b;
     color: #d4c9a8;
-    text-align: center;
     font-size: 1rem;
     letter-spacing: 0.3em;
-    padding: 0.3rem 0;
+    padding: 0.3rem 1rem;
     font-family: 'Georgia', serif;
     border-bottom: 2px solid #6b4f2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.sheet-subheader span {
+    flex: 1;
+    text-align: center;
 }
 
 /* ============================================================
@@ -105,11 +113,113 @@ html, body {
 
 .tab-btn:hover:not(.active) { background: #ddd5c0; }
 
-.reset-btn {
-    flex: 0 0 auto;
-    color: #7a1a1a !important;
-    font-style: italic;
+.die-tab-btn {
+    position: absolute;
+    right: 1rem;
+    background: #1a2540;
+    color: #f5c842;
+    border: 1px solid #f5c842;
+    padding: 0.2rem 0.9rem;
+    font-family: 'Georgia', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    border-radius: 2px;
 }
+
+.reset-bar {
+    max-width: 800px;
+    margin: 1rem auto 2rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.die-btn {
+    background: #1a2540;
+    color: #f5c842;
+    border: 2px solid #2c3d6b;
+    padding: 0.5rem 2rem;
+    font-family: 'Georgia', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.15s;
+}
+
+.die-btn:hover { background: #2c3d6b; }
+
+.die-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.die-popup {
+    background: #f5f0e8;
+    border: 3px solid #6b4f2a;
+    border-radius: 4px;
+    padding: 2rem 3rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    min-width: 200px;
+}
+
+.die-label {
+    font-family: 'Georgia', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #6b4f2a;
+    margin-bottom: 0.5rem;
+}
+
+.die-result {
+    font-family: 'Georgia', serif;
+    font-size: 5rem;
+    font-weight: bold;
+    color: #1a2540;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.die-close {
+    background: #1a2540;
+    color: #f5f0e8;
+    border: none;
+    padding: 0.4rem 1.5rem;
+    font-family: 'Georgia', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.die-close:hover { background: #2c3d6b; }
+
+.reset-btn {
+    background: #8b1a1a;
+    color: #f5f0e8;
+    border: 2px solid #5a0e0e;
+    padding: 0.5rem 2rem;
+    font-family: 'Georgia', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.15s;
+}
+
+.reset-btn:hover { background: #6b1010; }
 
 /* ============================================================
    SECTION HEADER BAND

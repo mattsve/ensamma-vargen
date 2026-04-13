@@ -51,7 +51,8 @@ public class CharacterData
         new() { Namn = "Spåra" },
         new() { Namn = "Telekinesi" },
         new() { Namn = "Varsebli" },
-        new() { Namn = "Vapenskicklighet",  Bonus = "+2" }
+        new() { Namn = "Vapenskicklighet",  Bonus = "+2" },
+        new() { Namn = "Vapenskicklighet" }
     };
 
     public string Utseende { get; set; } = "";
@@ -60,7 +61,7 @@ public class CharacterData
     public bool[] Maltider { get; set; } = new bool[10];
 
     public List<BackpackItem> Ryggsack { get; set; } =
-        Enumerable.Range(0, 12).Select(_ => new BackpackItem()).ToList();
+        Enumerable.Range(0, 8).Select(_ => new BackpackItem()).ToList();
 
     public List<SpecialItem> Specialforemal { get; set; } =
         Enumerable.Range(0, 8).Select(_ => new SpecialItem()).ToList();
@@ -81,8 +82,9 @@ public class CharacterData
         new() { Namn = "Stridshammare" },
         new() { Namn = "Svärd" },
         new() { Namn = "Stridsyxa" },
-        new() { Namn = "Bredsvärd" },
         new() { Namn = "Stav" },
+        new() { Namn = "Bredsvärd" },
+        new(),
         new(),
         new()
     };

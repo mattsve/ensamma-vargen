@@ -633,3 +633,31 @@ html, body {
 .loading-progress-text:after {
     content: var(--blazor-load-percentage-text, "Loading");
 }
+
+/* ============================================================
+   PRINT STYLES
+   ============================================================ */
+@media print {
+    .tab-bar,
+    .reset-bar,
+    .die-overlay {
+        display: none !important;
+    }
+
+    .sheet-subheader .die-tab-btn {
+        display: none !important;
+    }
+
+    .tab-page {
+        display: block !important;
+    }
+
+    .tab-page + .tab-page {
+        page-break-before: always;
+    }
+
+    .sheet-wrapper {
+        box-shadow: none;
+        max-width: 100%;
+    }
+}

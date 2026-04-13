@@ -412,6 +412,7 @@
         if (!confirmed) return;
         character = NewCharacter();
         await JS.InvokeVoidAsync("storageInterop.set", StorageKey, JsonSerializer.Serialize(character));
+        StateHasChanged();
     }
 
     private async void OnChange()

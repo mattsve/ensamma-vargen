@@ -8,7 +8,7 @@ Run from the repo root (solution file at root, project under `src/`):
 
 ```bash
 dotnet build          # compile
-dotnet watch --project src  # dev server with hot reload at http://localhost:5000
+dotnet watch --project src  # dev server with hot reload at http://localhost:5050
 dotnet run --project src    # run without hot reload
 ```
 

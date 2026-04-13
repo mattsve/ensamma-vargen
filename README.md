@@ -12,7 +12,7 @@ A digital, editable character sheet for the Swedish gamebook series *Ensamma Var
 
 ## Requirements
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
 
 ## Running locally
 
@@ -20,7 +20,7 @@ A digital, editable character sheet for the Swedish gamebook series *Ensamma Var
 dotnet watch --project src
 ```
 
-Opens at `http://localhost:5000` with hot reload.
+Opens at `http://localhost:5050` with hot reload.
 
 ## Building
 

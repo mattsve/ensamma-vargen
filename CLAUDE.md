@@ -24,4 +24,4 @@ Blazor WebAssembly (client-side only, no server). Single page at `/` — no rout
 
 **UI** (`Pages/Home.razor`): Two tabs (Karaktärsblad / Stridssida) toggled via `activeTab` int and `display:none`. No routing, no components — everything is in the single page file.
 
-**Styling** (`wwwroot/css/app.css`): Custom CSS only — no scoped `.razor.css` files. Brown/tan RPG aesthetic. `row-selected` class highlights checked discipline/weapon rows green.
+**Styling** (`wwwroot/css/app.css`): Custom CSS only — no scoped `.razor.css` files. Brown/tan gamebook aesthetic. `row-selected` class highlights checked discipline/weapon rows green.

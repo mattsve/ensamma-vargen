@@ -382,6 +382,8 @@
 
     private async void ResetAll()
     {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", "Är du säker? Alla värden kommer att raderas.");
+        if (!confirmed) return;
         character = new CharacterData();
         await JS.InvokeVoidAsync("storageInterop.set", StorageKey, JsonSerializer.Serialize(character));
     }

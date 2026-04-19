@@ -57,9 +57,7 @@
             </div>
             <div class="id-field narrow">
                 <label>RANG</label>
-                <input type="text"
-                       value="@character.Rang"
-                       @oninput="e => { character.Rang = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                <span class="id-computed">@character.Rang</span>
             </div>
             <div class="id-field wide">
                 <label>TITEL</label>
@@ -363,7 +361,6 @@
     private void MergeLoaded(CharacterData loaded)
     {
         character.Namn = loaded.Namn;
-        character.Rang = loaded.Rang;
         character.Titel = loaded.Titel;
         character.Utseende = loaded.Utseende;
         character.Gulddaler = loaded.Gulddaler;

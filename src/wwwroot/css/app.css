@@ -271,6 +271,16 @@ html, body {
     padding: 0.1rem 0;
 }
 
+.id-computed {
+    display: block;
+    font-family: 'Georgia', serif;
+    font-size: 0.9rem;
+    color: #1a1a1a;
+    border-bottom: 1px solid #8b6914;
+    padding: 0.1rem 0;
+    width: 100%;
+}
+
 /* ============================================================
    TWO-COLUMN LAYOUT
    ============================================================ */

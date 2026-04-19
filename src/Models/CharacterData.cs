@@ -37,8 +37,13 @@ public class WeaponEntry
 public class CharacterData
 {
     public string Namn { get; set; } = "";
-    public string Rang { get; set; } = "";
     public string Titel { get; set; } = "";
+
+    private static readonly string[] Rangar =
+        ["Novis", "Vägvisare", "Gesäll", "Följeslagare", "Invigd",
+         "Aspirant", "Väktare", "Vandrare", "Expert", "Mästare"];
+
+    public string Rang => Rangar[Math.Clamp(KaiDiscipliner.Count(d => d.Selected), 1, Rangar.Length) - 1];
 
     public List<DisciplinEntry> KaiDiscipliner { get; set; } = new()
     {

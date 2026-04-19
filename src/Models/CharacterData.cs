@@ -74,6 +74,7 @@ public class CharacterData
     // Combat page
     public string Stridsvarde { get; set; } = "";
     public string Uthallighet { get; set; } = "";
+    public string UthållighetMax { get; set; } = "";
 
     public List<CombatRow> Stridstabell { get; set; } =
         Enumerable.Range(0, 10).Select(_ => new CombatRow()).ToList();

@@ -108,7 +108,7 @@
                 <div class="section-header mt-section">PENGABÖRS</div>
                 <div class="money-row">
                     <span class="money-label">GULDDALER</span>
-                    <input type="text" class="money-input"
+                    <input type="number" class="money-input"
                            value="@character.Gulddaler"
                            @oninput="e => { character.Gulddaler = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
                 </div>
@@ -203,15 +203,21 @@
         <div class="combat-stats-row">
             <div class="combat-stat">
                 <label>STRIDSVÄRDE</label>
-                <input type="text"
+                <input type="number"
                        value="@character.Stridsvarde"
                        @oninput="e => { character.Stridsvarde = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
             </div>
             <div class="combat-stat">
                 <label>UTHÅLLIGHET</label>
-                <input type="text"
-                       value="@character.Uthallighet"
-                       @oninput="e => { character.Uthallighet = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                <div class="uth-pair">
+                    <input type="number"
+                           value="@character.Uthallighet"
+                           @oninput="e => { character.Uthallighet = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                    <span class="uth-sep">/</span>
+                    <input type="number"
+                           value="@character.UthållighetMax"
+                           @oninput="e => { character.UthållighetMax = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
+                </div>
             </div>
         </div>
 
@@ -238,17 +244,17 @@
                         {
                             <tr>
                                 <td>
-                                    <input type="text"
+                                    <input type="number"
                                            value="@row.DuUth"
                                            @oninput="e => { row.DuUth = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
                                 </td>
                                 <td class="ct-vs">
-                                    <input type="text"
+                                    <input type="number"
                                            value="@row.Stridsratio"
                                            @oninput="e => { row.Stridsratio = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
                                 </td>
                                 <td>
-                                    <input type="text"
+                                    <input type="number"
                                            value="@row.FiendeUth"
                                            @oninput="e => { row.FiendeUth = e.Value?.ToString() ?? string.Empty; OnChange(); }" />
                                 </td>
@@ -366,6 +372,7 @@
         character.Gulddaler = loaded.Gulddaler;
         character.Stridsvarde = loaded.Stridsvarde;
         character.Uthallighet = loaded.Uthallighet;
+        character.UthållighetMax = string.IsNullOrEmpty(loaded.UthållighetMax) ? loaded.Uthallighet : loaded.UthållighetMax;
         character.Anteckningar = loaded.Anteckningar;
 
         if (loaded.Maltider?.Length == character.Maltider.Length)
@@ -400,12 +407,17 @@
 
     private void RollDie() => dieResult = Random.Shared.Next(0, 10);
 
-    private static CharacterData NewCharacter() => new()
+    private static CharacterData NewCharacter()
     {
-        Stridsvarde = Random.Shared.Next(10, 20).ToString(),
-        Uthallighet = Random.Shared.Next(20, 30).ToString(),
-        Gulddaler = Random.Shared.Next(10, 20).ToString()
-    };
+        var uth = Random.Shared.Next(20, 30).ToString();
+        return new()
+        {
+            Stridsvarde = Random.Shared.Next(10, 20).ToString(),
+            Uthallighet = uth,
+            UthållighetMax = uth,
+            Gulddaler = Random.Shared.Next(10, 20).ToString()
+        };
+    }
 
     private async void ResetAll()
     {

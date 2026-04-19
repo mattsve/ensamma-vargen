@@ -403,7 +403,8 @@
     private static CharacterData NewCharacter() => new()
     {
         Stridsvarde = Random.Shared.Next(10, 20).ToString(),
-        Uthallighet = Random.Shared.Next(20, 30).ToString()
+        Uthallighet = Random.Shared.Next(20, 30).ToString(),
+        Gulddaler = Random.Shared.Next(10, 20).ToString()
     };
 
     private async void ResetAll()

@@ -210,6 +210,88 @@ html, body {
 
 .reset-btn:hover { background: #6b1010; }
 
+.export-btn {
+    background: #1a2540;
+    color: #f5f0e8;
+    border: 2px solid #0f1628;
+    padding: 0.5rem 2rem;
+    font-family: 'Georgia', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.15s;
+}
+
+.export-btn:hover { background: #2c3d6b; }
+
+.export-panel {
+    max-width: 800px;
+    margin: 0 auto 2rem;
+    padding: 0.75rem 1rem;
+    background: #f5f0e8;
+    border: 2px solid #6b4f2a;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.export-label {
+    font-family: 'Georgia', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6b4f2a;
+    white-space: nowrap;
+}
+
+.export-url-input {
+    flex: 1;
+    min-width: 0;
+    font-family: monospace;
+    font-size: 0.8rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid #c4b49a;
+    border-radius: 3px;
+    background: #fff;
+    color: #1a2540;
+    cursor: text;
+}
+
+.export-copy-btn {
+    background: #6b4f2a;
+    color: #f5f0e8;
+    border: none;
+    padding: 0.35rem 1rem;
+    font-family: 'Georgia', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+
+.export-copy-btn:hover { background: #4f3a1e; }
+
+.export-close-btn {
+    background: none;
+    color: #6b4f2a;
+    border: 1px solid #6b4f2a;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 3px;
+    line-height: 1;
+    transition: background 0.15s, color 0.15s;
+}
+
+.export-close-btn:hover { background: #6b4f2a; color: #f5f0e8; }
+
 /* ============================================================
    SECTION HEADER BAND
    ============================================================ */

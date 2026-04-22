@@ -1,5 +1,6 @@
 @page "/"
 @using System.Text.Json
+@using System.Text
 @inject IJSRuntime JS
 
 <div class="sheet-wrapper">
@@ -320,7 +321,18 @@
 
 <div class="reset-bar">
     <button class="reset-btn" @onclick="ResetAll">Återställ karaktärsblad</button>
+    <button class="export-btn" @onclick="ExportCharacter">Exportera karaktär</button>
 </div>
+
+@if (exportUrl != null)
+{
+    <div class="export-panel">
+        <span class="export-label">Dela länk:</span>
+        <input class="export-url-input" type="text" readonly value="@exportUrl" />
+        <button class="export-copy-btn" @onclick="CopyExportUrl">Kopiera</button>
+        <button class="export-close-btn" @onclick="() => exportUrl = null">✕</button>
+    </div>
+}
 
 @if (dieResult.HasValue)
 {
@@ -337,6 +349,7 @@
     private CharacterData character = NewCharacter();
     private int activeTab = 0;
     private int? dieResult = null;
+    private string? exportUrl = null;
     private const string StorageKey = "ev_character";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -359,6 +372,29 @@
                 catch (Exception ex)
                 {
                     await JS.InvokeVoidAsync("console.warn", $"Could not load saved character data: {ex.Message}");
+                }
+            }
+
+            var hash = await JS.InvokeAsync<string?>("urlInterop.getHash");
+            if (!string.IsNullOrEmpty(hash) && hash.StartsWith("#c="))
+            {
+                try
+                {
+                    var b64 = hash[3..];
+                    var importedJson = Encoding.UTF8.GetString(Convert.FromBase64String(b64));
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var loaded = JsonSerializer.Deserialize<CharacterData>(importedJson, options);
+                    if (loaded != null)
+                    {
+                        MergeLoaded(loaded);
+                        await JS.InvokeVoidAsync("storageInterop.set", StorageKey, JsonSerializer.Serialize(character));
+                        StateHasChanged();
+                    }
+                }
+                catch { }
+                finally
+                {
+                    await JS.InvokeVoidAsync("urlInterop.clearHash");
                 }
             }
         }
@@ -432,5 +468,20 @@
     {
         var json = JsonSerializer.Serialize(character);
         await JS.InvokeVoidAsync("storageInterop.set", StorageKey, json);
+    }
+
+    private async void ExportCharacter()
+    {
+        var json = JsonSerializer.Serialize(character);
+        var b64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
+        var baseUrl = await JS.InvokeAsync<string>("urlInterop.getBaseUrl");
+        exportUrl = $"{baseUrl}#c={b64}";
+        StateHasChanged();
+    }
+
+    private async void CopyExportUrl()
+    {
+        if (exportUrl != null)
+            await JS.InvokeVoidAsync("urlInterop.copyToClipboard", exportUrl);
     }
 }

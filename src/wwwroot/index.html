@@ -32,6 +32,12 @@
             set: (key, val) => localStorage.setItem(key, val),
             get: (key) => localStorage.getItem(key)
         };
+        window.urlInterop = {
+            getHash: () => window.location.hash,
+            clearHash: () => history.replaceState(null, '', window.location.pathname),
+            getBaseUrl: () => window.location.origin + window.location.pathname,
+            copyToClipboard: (text) => navigator.clipboard.writeText(text)
+        };
     </script>
 </body>
 

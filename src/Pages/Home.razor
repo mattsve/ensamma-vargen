@@ -225,6 +225,10 @@
         <!-- Combat initiation -->
         <div class="combat-init-bar">
             <div class="combat-init-field">
+                <label>BONUS</label>
+                <input type="number" @bind="combatInputBonus" />
+            </div>
+            <div class="combat-init-field">
                 <label>FIENDENS STRIDSVÄRDE</label>
                 <input type="number" @bind="combatInputEnemySkill" />
             </div>
@@ -405,6 +409,7 @@
     private int activeTab = 0;
     private int? dieResult = null;
     private string? exportUrl = null;
+    private int combatInputBonus;
     private int combatInputEnemySkill;
     private int combatInputEnemyUth;
     private bool combatActive;
@@ -556,7 +561,7 @@
         if (combatInputEnemyUth <= 0) return;
         if (!int.TryParse(character.Uthallighet, out var lwUth) || lwUth <= 0) return;
 
-        combatStridsratio = lwSkill - combatInputEnemySkill;
+        combatStridsratio = lwSkill + combatInputBonus - combatInputEnemySkill;
         combatLwUth = lwUth;
         combatCurrentEnemyUth = combatInputEnemyUth;
         combatRound = 0;

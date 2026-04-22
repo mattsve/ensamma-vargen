@@ -222,6 +222,19 @@
             </div>
         </div>
 
+        <!-- Combat initiation -->
+        <div class="combat-init-bar">
+            <div class="combat-init-field">
+                <label>FIENDENS STRIDSVÄRDE</label>
+                <input type="number" @bind="combatInputEnemySkill" />
+            </div>
+            <div class="combat-init-field">
+                <label>FIENDENS UTHÅLLIGHET</label>
+                <input type="number" @bind="combatInputEnemyUth" />
+            </div>
+            <button class="combat-start-btn" @onclick="StartCombat">Starta strid</button>
+        </div>
+
         <div class="two-col">
 
             <!-- LEFT: Combat table + Notes -->
@@ -334,6 +347,48 @@
     </div>
 }
 
+@if (combatActive)
+{
+    <div class="combat-overlay">
+        <div class="combat-popup">
+            <div class="combat-popup-header">STRID</div>
+            <div class="combat-status-row">
+                <div class="combat-status-side">
+                    <div class="combat-status-label">ENSAMMA VARGEN</div>
+                    <div class="combat-status-uth @(combatLwUth <= 0 ? "uth-dead" : "")">@combatLwUth</div>
+                </div>
+                <div class="combat-status-center">
+                    <div class="combat-ratio-label">STRIDSRATIO</div>
+                    <div class="combat-ratio-value">@(combatStridsratio >= 0 ? "+" : "")@combatStridsratio</div>
+                </div>
+                <div class="combat-status-side">
+                    <div class="combat-status-label">FIENDE</div>
+                    <div class="combat-status-uth @(combatCurrentEnemyUth <= 0 ? "uth-dead" : "")">@combatCurrentEnemyUth</div>
+                </div>
+            </div>
+            <div class="combat-log">
+                @foreach (var entry in combatLog)
+                {
+                    <div class="combat-log-entry">@entry</div>
+                }
+            </div>
+            <div class="combat-actions">
+                @if (!combatOver)
+                {
+                    <button class="combat-roll-btn" @onclick="RollCombatRound">Slå runda @(combatRound + 1)</button>
+                }
+                else
+                {
+                    <div class="combat-outcome @(combatVictory ? "combat-victory" : "combat-defeat")">
+                        @(combatVictory ? "SEGER!" : "BESEGRAD")
+                    </div>
+                }
+                <button class="combat-end-btn" @onclick="EndCombat">Avsluta strid</button>
+            </div>
+        </div>
+    </div>
+}
+
 @if (dieResult.HasValue)
 {
     <div class="die-overlay" @onclick="() => dieResult = null">
@@ -350,6 +405,16 @@
     private int activeTab = 0;
     private int? dieResult = null;
     private string? exportUrl = null;
+    private int combatInputEnemySkill;
+    private int combatInputEnemyUth;
+    private bool combatActive;
+    private int combatStridsratio;
+    private int combatLwUth;
+    private int combatCurrentEnemyUth;
+    private int combatRound;
+    private bool combatOver;
+    private bool combatVictory;
+    private List<string> combatLog = new();
     private const string StorageKey = "ev_character";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -484,4 +549,90 @@
         if (exportUrl != null)
             await JS.InvokeVoidAsync("urlInterop.copyToClipboard", exportUrl);
     }
+
+    private void StartCombat()
+    {
+        if (!int.TryParse(character.Stridsvarde, out var lwSkill)) return;
+        if (combatInputEnemyUth <= 0) return;
+        if (!int.TryParse(character.Uthallighet, out var lwUth) || lwUth <= 0) return;
+
+        combatStridsratio = lwSkill - combatInputEnemySkill;
+        combatLwUth = lwUth;
+        combatCurrentEnemyUth = combatInputEnemyUth;
+        combatRound = 0;
+        combatOver = false;
+        combatVictory = false;
+        combatLog = new();
+        combatActive = true;
+    }
+
+    private void RollCombatRound()
+    {
+        combatRound++;
+        var roll = Random.Shared.Next(0, 10);
+        var rowIdx = roll == 0 ? 9 : roll - 1;
+        var col = GetRatioCol(combatStridsratio);
+        var (eLoss, lwLoss) = CombatTable[rowIdx, col];
+
+        var enemyKilled = eLoss == -1;
+        var lwKilled = lwLoss == -1;
+
+        if (!enemyKilled) combatCurrentEnemyUth = Math.Max(0, combatCurrentEnemyUth - eLoss);
+        else combatCurrentEnemyUth = 0;
+
+        if (!lwKilled) combatLwUth = Math.Max(0, combatLwUth - lwLoss);
+        else combatLwUth = 0;
+
+        var eLossText = enemyKilled ? "K" : eLoss.ToString();
+        var lwLossText = lwKilled ? "K" : lwLoss.ToString();
+        combatLog.Add($"Runda {combatRound}: tärning {roll} → Fiende -{eLossText} ({combatCurrentEnemyUth}), Du -{lwLossText} ({combatLwUth})");
+
+        if (combatCurrentEnemyUth <= 0 || combatLwUth <= 0)
+        {
+            combatOver = true;
+            combatVictory = combatCurrentEnemyUth <= 0 && combatLwUth > 0;
+            combatLog.Add(combatVictory ? "⚔ Fienden besegrad!" :
+                combatLwUth <= 0 && combatCurrentEnemyUth <= 0 ? "Båda föll." : "Ensamma Vargen föll.");
+        }
+    }
+
+    private async void EndCombat()
+    {
+        character.Uthallighet = combatLwUth.ToString();
+        await JS.InvokeVoidAsync("storageInterop.set", StorageKey, JsonSerializer.Serialize(character));
+        combatActive = false;
+        StateHasChanged();
+    }
+
+    private static int GetRatioCol(int ratio)
+    {
+        if (ratio <= -11) return 0;
+        if (ratio <= -9)  return 1;
+        if (ratio <= -7)  return 2;
+        if (ratio <= -5)  return 3;
+        if (ratio <= -3)  return 4;
+        if (ratio <= -1)  return 5;
+        if (ratio == 0)   return 6;
+        if (ratio <= 2)   return 7;
+        if (ratio <= 4)   return 8;
+        if (ratio <= 6)   return 9;
+        if (ratio <= 8)   return 10;
+        if (ratio <= 10)  return 11;
+        return 12;
+    }
+
+    private static readonly (int E, int LW)[,] CombatTable =
+    {
+        //  ≤-11      -10/-9    -8/-7     -6/-5     -4/-3     -2/-1     0         +1/+2     +3/+4     +5/+6     +7/+8     +9/+10    ≥+11
+        { (0,-1), (0,-1), (0,8),  (0,6),  (1,6),  (2,5),  (3,5),  (4,5),  (5,4),  (6,4),  (7,4),  (8,3),  (9,3)  }, // roll 1
+        { (0,-1), (0,8),  (0,7),  (1,6),  (2,5),  (3,5),  (4,4),  (5,4),  (6,3),  (7,3),  (8,3),  (9,3),  (10,2) }, // roll 2
+        { (0,8),  (0,7),  (1,6),  (2,5),  (3,5),  (4,4),  (5,4),  (6,3),  (7,3),  (8,3),  (9,2),  (10,2), (11,2) }, // roll 3
+        { (0,8),  (1,7),  (2,6),  (3,5),  (4,4),  (5,4),  (6,3),  (7,3),  (8,2),  (9,2),  (10,2), (11,2), (12,2) }, // roll 4
+        { (1,7),  (2,6),  (3,5),  (4,4),  (5,4),  (6,3),  (7,2),  (8,2),  (9,2),  (10,2), (11,2), (12,2), (14,1) }, // roll 5
+        { (2,6),  (3,6),  (4,5),  (5,4),  (6,3),  (7,2),  (8,2),  (9,2),  (10,2), (11,1), (12,1), (14,1), (16,1) }, // roll 6
+        { (3,5),  (4,5),  (5,4),  (6,3),  (7,2),  (8,2),  (9,1),  (10,1), (11,1), (12,0), (14,0), (16,0), (18,0) }, // roll 7
+        { (4,4),  (5,4),  (6,3),  (7,2),  (8,1),  (9,1),  (10,0), (11,0), (12,0), (14,0), (16,0), (18,0), (-1,0) }, // roll 8
+        { (5,3),  (6,3),  (7,2),  (8,0),  (9,0),  (10,0), (11,0), (12,0), (14,0), (16,0), (18,0), (-1,0), (-1,0) }, // roll 9
+        { (6,0),  (7,0),  (8,0),  (9,0),  (10,0), (11,0), (12,0), (14,0), (16,0), (18,0), (-1,0), (-1,0), (-1,0) }, // roll 0
+    };
 }
